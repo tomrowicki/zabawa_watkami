@@ -1,5 +1,7 @@
 package multi;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,14 +12,20 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest
 public class AreaCalculatorTest {
 
+	// TODO executor
+	// TODO losowanie argumentów, wyliczać wynik w teście i wpuszczać liczby do
+	// komponentu, porównując z wynikiem
+	// TODO sleep z losową ilością ms dla każdego wątku
+	// TODO druga metoda, stanowa, pokazująca jak nie należy robić
+	
 	// korzysta ze springowego singletona
 	@Autowired
 	private AreaCalculator areaCalculator;
-	
+
 	@Test
 	public void shouldProperlyCalculateArea() {
 		// 1000 powtórzeń
-		for (int i=0; i<1000; i++) {
+		for (int i = 0; i < 1000; i++) {
 			test();
 		}
 	}
@@ -25,17 +33,17 @@ public class AreaCalculatorTest {
 	private void test() {
 		Runnable[] threadPool = new Runnable[8];
 		// dla procesora 8-wątkowego
-		for (int i=0; i<8; i++) {
+		for (int i = 0; i < 8; i++) {
 			Runnable t;
 			// różne argumenty dla parzystych/nieparzystych wątków
 			if (i % 2 == 0) {
 				t = () -> {
-				System.out.println(6 == areaCalculator.calculateRectangleArea(2, 3));	
+					assertEquals(6, areaCalculator.calculateRectangleArea(2, 3));
 				};
-				
+
 			} else {
 				t = () -> {
-				System.out.println(12 == areaCalculator.calculateRectangleArea(3, 4));
+					assertEquals(12, areaCalculator.calculateRectangleArea(3, 4));
 				};
 			}
 			threadPool[i] = t;
@@ -46,4 +54,3 @@ public class AreaCalculatorTest {
 		}
 	}
 }
-
